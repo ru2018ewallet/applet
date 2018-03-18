@@ -29,7 +29,7 @@ class StateMachine {
 	private static byte state = INITIALIZED;
 	//private static LifeCyclePhaseMachine phaseMachine;
 
-	public void StateMachine() {
+	private void StateMachine() {
 		state = INITIALIZED;
 	}
 
