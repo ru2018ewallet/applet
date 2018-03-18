@@ -25,8 +25,8 @@ public class EWallet extends Applet {
 	/* VARIABLES */
 	private OwnerPIN pin;
 	private short balance; //#!TODO keep in mind that this is "only" a short
-	//~ private StateMachine stateMachine;
-	//~ private LifeCyclePhaseMachine phaseMachine;
+//	private LifeCyclePhaseMachine phaseMachine;
+	private StateMachine stateMachine;
 
 	private PIN userPIN;
 
@@ -36,6 +36,8 @@ public class EWallet extends Applet {
 	public EWallet(byte[] buffer, short offset, byte length) {
 		// #!TODO personalize: keys and PIN
 		balance = 0; // init with no money
+//		phaseMachine = new LifeCyclePhaseMachine();
+		stateMachine = new StateMachine();
 		register();
 	}
 
