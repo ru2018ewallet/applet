@@ -1,0 +1,115 @@
+// The MIT License (MIT)
+// 
+// Copyright (c) 2015 Dusan Klinec, Martin Paljak, Petr Svenda
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+// Taken from:
+// https://github.com/ph4r05/javacard-gradle-template/blob/master/applet/build.gradle
+// commit f8c3d3256be3fe3a4c965a1d5a82022e856d7a49
+// modified.
+
+
+group 'test-applet'
+version '1.0-SNAPSHOT'
+
+// Buildscript configuration for the javacard-gradle plugin.
+// Do not modify this particular block. Dependencies for the project are lower.
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.klinec:gradle-javacard:1.5.5'
+    }
+}
+
+apply plugin: 'javacard'
+sourceCompatibility = 1.7
+
+// Common settings, definitions
+final def rootPath = rootDir.absolutePath
+final def libs = rootPath + '/libs'
+final def libsSdk = rootPath + '/libs-sdks'
+
+// Repositories for your project
+repositories {
+    mavenCentral()
+    // mavenLocal() // for local maven repository if needed
+    flatDir {
+        dirs libs
+    }
+}
+
+// Dependencies for your project
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile 'org.testng:testng:6.1.1'
+    
+    // jcardsim 'com.licel:jcardsim:3.0.4'
+}
+
+test {
+    useTestNG()
+    jvmArgs '-noverify'
+}
+
+// JavaCard SDKs and libraries
+final def JC212 = libsSdk + '/jc212_kit'
+final def JC221 = libsSdk + '/jc221_kit'
+final def JC222 = libsSdk + '/jc222_kit'
+final def JC303 = libsSdk + '/jc303_kit'
+final def JC304 = libsSdk + '/jc304_kit'
+final def JC305 = libsSdk + '/jc305u1_kit'
+
+// Which JavaCard SDK to use - select
+final def JC_SELECTED = JC222
+
+javacard {
+
+    //noinspection GroovyAssignabilityCheck
+    config {
+        jckit JC_SELECTED
+
+        // JCardSim automatically added by the javacard-gradle plugin
+        addSurrogateJcardSimRepo true
+        addImplicitJcardSim true
+        addImplicitJcardSimJunit true
+
+        //noinspection GroovyAssignabilityCheck
+        cap {
+            packageName 'applet'
+            version '0.1'
+            aid '01:02:03:04:05:06:07:08:09'
+            output 'applet.cap'
+
+            //noinspection GroovyAssignabilityCheck
+            applet {
+                className 'applet.MainApplet'
+                aid '01:02:03:04:05:06:07:08:09:01:02'
+            }
+
+            //noinspection GroovyAssignabilityCheck
+            dependencies {
+                remote 'fr.bmartel:gplatform:2.1.1'
+            }
+        }
+    }
+}
+
