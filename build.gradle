@@ -94,14 +94,14 @@ javacard {
 
         //noinspection GroovyAssignabilityCheck
         cap {
-            packageName 'applet'
+            packageName 'nl.ru.hardware_security.feb2018.group7.ewallet'
             version '0.1'
             aid '01:02:03:04:05:06:07:08:09'
-            output 'applet.cap'
+            output 'ewallet.cap'
 
             //noinspection GroovyAssignabilityCheck
             applet {
-                className 'applet.MainApplet'
+                className 'nl.ru.hardware_security.feb2018.group7.ewallet.EWallet'
                 aid '01:02:03:04:05:06:07:08:09:01:02'
             }
 
