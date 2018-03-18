@@ -17,7 +17,7 @@ class StateMachine {
 	final static byte CARD_AUTHENTICATED         = (byte) 0x40;
 	final static byte USER_AUTHENTICATED         = (byte) 0x50; //#!TODO unclear whether we need this
 	
-	//final static byte MGMT_AUTHENTICATED          = (byte) 0x60; // #!TODO do we need this??
+	final static byte MGMT_AUTHENTICATED          = (byte) 0x60; // #!TODO do we need this??
 
 	// the only way to go back is to RST (kill session, create new session - that makes programming easier)
 	final static byte END                        = (byte) 0x90;
@@ -27,8 +27,9 @@ class StateMachine {
 	 * VARIABLES
 	 */
 	private static byte state = INITIALIZED;
+	//private static LifeCyclePhaseMachine phaseMachine;
 
-	public final void StateMachine(LifeCyclePhaseMachine lcpm) {
+	public void StateMachine() {
 		state = INITIALIZED;
 	}
 
@@ -37,6 +38,8 @@ class StateMachine {
 	}
 
 	static final boolean isAllowed(byte apduCommandAction) {
+		byte phase = LifeCyclePhaseMachine.getPhase();
+		
 		switch (apduCommandAction) {
 		case EWallet.BALANCE:
 			// #!TODO implement
@@ -45,12 +48,13 @@ class StateMachine {
 		// #!TODO implement
 			break;
 		case EWallet.CHARGE:
-			if (state == CARD_AUTHENTICATED) {
+			if (phase == LifeCyclePhaseMachine.PERSONALIZED && state == CARD_AUTHENTICATED) {
 				return true;
 			}
 			break;
 		case EWallet.HISTORY:
-			if (state == USER_AUTHENTICATED) {
+			if ((phase == LifeCyclePhaseMachine.PERSONALIZED && state == USER_AUTHENTICATED) ||
+				phase == LifeCyclePhaseMachine.LOCKED_PIN && state == MGMT_AUTHENTICATED) {
 				return true;
 			}
 			break;
