@@ -37,10 +37,12 @@ buildscript {
     }
     dependencies {
         classpath 'com.klinec:gradle-javacard:1.5.5'
+        classpath ("org.junit.platform:junit-platform-gradle-plugin:1.0.0-M4")
     }
 }
 
 apply plugin: 'javacard'
+apply plugin: 'org.junit.platform.gradle.plugin'
 sourceCompatibility = 1.7
 
 // Common settings, definitions
@@ -59,7 +61,16 @@ repositories {
 
 // Dependencies for your project
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+	testCompile("junit:junit:4.12")
+    testRuntime("org.junit.vintage:junit-vintage-engine:4.12.0-M4")
+
+    testCompile("org.junit.jupiter:junit-jupiter-api:5.0.0-M4")
+    testRuntime("org.junit.jupiter:junit-jupiter-engine:5.0.0-M4")
+
+    // Enable use of the JUnitPlatform Runner within the IDE
+    testCompile("org.junit.platform:junit-platform-runner:1.0.0-M4")
+
+    
     testCompile 'org.testng:testng:6.1.1'
     
     // jcardsim 'com.licel:jcardsim:3.0.4'
@@ -68,6 +79,10 @@ dependencies {
 test {
     useTestNG()
     jvmArgs '-noverify'
+    reports {
+		//junitXml.enabled = false // apparently does not work with JUnit5
+		//html.enabled = true //apparently does not work with JUnit5
+	}
 }
 
 // JavaCard SDKs and libraries
